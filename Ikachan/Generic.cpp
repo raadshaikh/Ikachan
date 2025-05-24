@@ -86,7 +86,7 @@ BOOL OpenSoundVolume(HWND hWnd)
 
 	//Get first Sndvol32 path
 	char path2[MAX_PATH];
-	sprintf(path2, "%s\\Sndvol32.exe", path);
+	sprintf(path2, "%s\\SndVol.exe", path);
 
 	//Cut off the file path...
 	size_t i = strlen(path);
@@ -96,7 +96,7 @@ BOOL OpenSoundVolume(HWND hWnd)
 
 	//And... uhhh... get another path to try to open from?
 	char path3[MAX_PATH];
-	sprintf(path3, "%s\\Sndvol32.exe", path);
+	sprintf(path3, "%s\\SndVol.exe", path);
 
 	//Open Sndvol32 I guess?
 	INT_PTR error1 = (INT_PTR)ShellExecute(hWnd, "open", path2, NULL, NULL, SW_SHOW);

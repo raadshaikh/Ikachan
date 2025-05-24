@@ -1,4 +1,4 @@
-﻿#include "Draw.h"
+#include "Draw.h"
 #include <ddraw.h>
 #include <string.h>
 #include <stdio.h>
@@ -22,7 +22,6 @@ LPDIRECTDRAWSURFACE surf[MAX_SURFACE] = {NULL};
 
 //Loaded font
 HFONT font;
-HFONT font2;
 
 //Window rect and size
 RECT backbuffer_rect;
@@ -367,9 +366,6 @@ void InitTextObject(LPCTSTR name)
 
 	//Create font object
 	font = CreateFont(height, width, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH | FF_DONTCARE, name);
-	
-	LPCTSTR name2 = "ＭＳ Ｐゴシック";
-	font2 = CreateFont(height, width, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FIXED_PITCH | FF_DONTCARE, name2);
 }
 
 void PutText(int x, int y, LPCTSTR text, DWORD color, BOOL unk)
@@ -413,41 +409,16 @@ void PutText3(int x, int y, LPCTSTR text, DWORD color, int surf_no, BOOL unk)
 	surf[surf_no]->GetDC(&hdc);
 
 	//Draw text onto surface
-	HGDIOBJ hgdiobj = SelectObject(hdc, font2);
+	HGDIOBJ hgdiobj = SelectObject(hdc, font);
 	SetBkMode(hdc, 1);
 	SetTextColor(hdc, color);
 
-	LPCWSTR my_wstring = L"";
-		if (*text == '[') {
-		my_wstring = L"「";
-	}
-	if (*text == ']') {
-		my_wstring = L"」";
-	}
+	const char *my_string = "G";
+	int wbuffsize = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, my_string, -1, NULL, 0);
+	LPWSTR my_wstring = new wchar_t[wbuffsize];
+	int temporary = MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, my_string, -1, my_wstring, wbuffsize);
 
-	TextOutW(hdc, x * mag, y * mag, my_wstring, (int)wcslen(my_wstring));
-	SelectObject(hdc, hgdiobj);
-
-	//Unlock surface
-	surf[surf_no]->ReleaseDC(hdc);
-}
-
-void PutText4(int x, int y, int u, DWORD color, int surf_no, BOOL unk)
-{
-	//Lock surface
-	HDC hdc;
-	surf[surf_no]->GetDC(&hdc);
-
-	//Draw text onto surface
-	HGDIOBJ hgdiobj = SelectObject(hdc, font2);
-	SetBkMode(hdc, 1);
-	SetTextColor(hdc, color);
-
-	wchar_t wtext[2];
-	wtext[0] = u;
-	wtext[1] = 0;
-
-	TextOutW(hdc, x * mag, y * mag, wtext, (int)wcslen(wtext));
+	TextOutW(hdc, x * mag, y * mag, my_wstring, (int)strlen(text));
 	SelectObject(hdc, hgdiobj);
 
 	//Unlock surface

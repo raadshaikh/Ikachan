@@ -53,11 +53,11 @@ DWORD CountFramePerSecound()
 
 	if (first)
 	{
-		wait = GetTickCount();
+		wait = GetTickCount64();
 		first = FALSE;
 	}
 
-	current_tick = GetTickCount();
+	current_tick = GetTickCount64();
 	++count;
 
 	if (wait + 1000 <= current_tick)
@@ -146,7 +146,7 @@ BOOL Game(HWND hWnd)
 	while (mode == GAMEMODE_OPENING)
 	{
 		//Start frame
-		tick = GetTickCount();
+		tick = GetTickCount64();
 		PiyoPiyoControl(&piyocont);
 		GetTrg();
 		CortBox(&grcFull, 0x000000);
@@ -165,12 +165,12 @@ BOOL Game(HWND hWnd)
 	}
 	
 	//Load map event and data
-	sprintf(path, "%s\\%s", gModulePath, "Event.ptx");
+	sprintf_s(path, "%s\\%s", gModulePath, "Event.ptx");
 	if (!ReadEventScript(path, &event_scr))
 		return TRUE;
 	DebugPutText((LPCTSTR)event_scr.data);
 	
-	sprintf(path, "%s\\%s", gModulePath, "Pbm\\Map1.pbm");
+	sprintf_s(path, "%s\\%s", gModulePath, "Pbm\\Map1.pbm");
 	if (!LoadMapData(path, &map))
 		return TRUE;
 	
@@ -184,7 +184,7 @@ BOOL Game(HWND hWnd)
 	while (mode == GAMEMODE_LOAD)
 	{
 		//Start frame
-		tick = GetTickCount();
+		tick = GetTickCount64();
 		PiyoPiyoControl(&piyocont);
 		GetTrg();
 		CortBox(&grcFull, 0x000000);
@@ -222,14 +222,14 @@ BOOL Game(HWND hWnd)
 	}
 	
 	//Load intro script
-	sprintf(path, "%s\\%s", gModulePath, "Words.ptx");
+	sprintf_s(path, "%s\\%s", gModulePath, "Words.ptx");
 	LoadPixelScript(&pix_scr, path, 2);
 	
 	//Intro
 	while (mode == GAMEMODE_INTRO)
 	{
 		//Start frame
-		tick = GetTickCount();
+		tick = GetTickCount64();
 		PiyoPiyoControl(&piyocont);
 		GetTrg();
 		CortBox(&grcFull, 0x00FFFF);
@@ -277,7 +277,7 @@ BOOL Game(HWND hWnd)
 		while (mode == GAMEMODE_GAMEPLAY)
 		{
 			//Start frame
-			tick = GetTickCount();
+			tick = GetTickCount64();
 			PiyoPiyoControl(&piyocont);
 			GetTrg();
 			CortBox(&grcFull, 0x000000);
@@ -381,7 +381,7 @@ BOOL Game(HWND hWnd)
 		while (mode == GAMEMODE_INVENTORY)
 		{
 			//Start frame
-			tick = GetTickCount();
+			tick = GetTickCount64();
 			PiyoPiyoControl(&piyocont);
 			GetTrg();
 			CortBox(&grcFull, 0x000000);
@@ -408,7 +408,7 @@ BOOL Game(HWND hWnd)
 		while (mode == GAMEMODE_EDITOR)
 		{
 			//Start frame
-			tick = GetTickCount();
+			tick = GetTickCount64();
 			GetTrg();
 			CortBox(&grcFull, 0x000000);
 			
@@ -445,14 +445,14 @@ BOOL Game(HWND hWnd)
 	PiyoPiyoControl(&piyocont);
 	
 	//Load staff script
-	sprintf(path, "%s\\%s", gModulePath, "Staff.ptx");
+	sprintf_s(path, "%s\\%s", gModulePath, "Staff.ptx");
 	LoadPixelScript(&pix_scr, path, 4);
 	
 	//Staff
 	while (mode == GAMEMODE_STAFF)
 	{
 		//Start frame
-		tick = GetTickCount();
+		tick = GetTickCount64();
 		PiyoPiyoControl(&piyocont);
 		GetTrg();
 		CortBox(&grcFull, 0x000000);

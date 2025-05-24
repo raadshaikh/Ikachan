@@ -112,9 +112,9 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 						//Bring up "END" text
 						ptx->end = TRUE;
 					}
-					else if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z')
+					else if (ptx->data[ptx->p_read] >= ' ' && ptx->data[ptx->p_read] <= '~' && ptx->data[ptx->p_read] != '+' && ptx->data[ptx->p_read] != '<')
 					{
-						//English alphabet
+						//English alphabet or rather, now modified to include punctuation and stuff (but exclude + and <)
 						c[j] = ptx->data[ptx->p_read++];
 					}
 					else if (ptx->data[ptx->p_read] >= '0' && ptx->data[ptx->p_read] <= '9')
@@ -136,8 +136,8 @@ int PixelScriptProc(PIX_SCR *ptx, PIYOPIYO_CONTROL *piyocont, BOOL ending)
 					{
 						//Print text onto line
 						c[j] = 0;
-						PutText2(8, 1, c, 0xFF0000, SURFACE_ID_WORDS0 + ptx->line, FALSE);
-						PutText2(8, 0, c, 0xFF8800, SURFACE_ID_WORDS0 + ptx->line, FALSE);
+						PutText2(6, 1, c, 0xFF0000, SURFACE_ID_WORDS0 + ptx->line, FALSE);
+						PutText2(6, 0, c, 0xFF8800, SURFACE_ID_WORDS0 + ptx->line, FALSE);
 						if (++ptx->line > (MAX_PSLINES - 1))
 							ptx->line = 0;
 						ptx->p_read += 2;

@@ -80,4 +80,6 @@ void CortBox2(const RECT *rect, DWORD col, int surf_no);
 void InitTextObject(LPCTSTR name);
 void PutText(int x, int y, LPCTSTR text, DWORD color, BOOL unk);
 void PutText2(int x, int y, LPCTSTR text, DWORD color, int surf_no, BOOL unk);
+void PutText3(int x, int y, LPCTSTR text, DWORD color, int surf_no, BOOL unk);
+void PutText4(int x, int y, int u, DWORD color, int surf_no, BOOL unk);
 void EndTextObject();

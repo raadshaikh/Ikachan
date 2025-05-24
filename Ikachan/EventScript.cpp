@@ -591,7 +591,7 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 		}
 		
 		//Print English alphabet
-		if (ptx->data[ptx->p_read] >= 'A' && ptx->data[ptx->p_read] <= 'z')
+		if (((((ptx->data[ptx->p_read] >= ' ' && ptx->data[ptx->p_read] <= 'z') && ptx->data[ptx->p_read] != '<') && ptx->data[ptx->p_read] != '+') && ptx->data[ptx->p_read] != '[') && ptx->data[ptx->p_read] != ']')
 		{
 			//Type wait
 			ptx->msg_box = 1;
@@ -603,8 +603,8 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			c[0] = ptx->data[ptx->p_read];
 			c[1] = 0;
 			PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-			PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
-			PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+			PutText2((6 * ptx->p_write) + 1, 1+(1-(ptx->line%2)), c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+			PutText2(6 * ptx->p_write, 0+(1-(ptx->line%2)), c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
 			ptx->p_write++;
 			ptx->p_read++;
 			return 0;
@@ -623,8 +623,8 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 			c[0] = ptx->data[ptx->p_read];
 			c[1] = 0;
 			PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-			PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
-			PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+			PutText2((6 * ptx->p_write) + 1, 1+(1-(ptx->line%2)), c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+			PutText2(6 * ptx->p_write, 0+(1-(ptx->line%2)), c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
 			ptx->p_write++;
 			ptx->p_read++;
 			return 0;
@@ -633,9 +633,9 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 		//Handle specific characters
 		switch (ptx->data[ptx->p_read])
 		{
-			case ',':
-			case '.':
-			case '/':
+			/*case ',':
+			case '.':*/
+			case '[':
 				//Type wait
 				ptx->msg_box = 1;
 				ptx->wait = ptx->x1C;
@@ -646,8 +646,24 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 				c[0] = ptx->data[ptx->p_read];
 				c[1] = 0;
 				PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
-				PutText2((8 * ptx->p_write) + 1, 1, c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
-				PutText2(8 * ptx->p_write, 0, c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+				PutText3((6 * ptx->p_write) + 1, 1 + (1 - (ptx->line % 2)), c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+				PutText3(6 * ptx->p_write, 0 + (1 - (ptx->line % 2)), c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+				ptx->p_write++;
+				ptx->p_read++;
+				return 0;
+			case ']':
+				//Type wait
+				ptx->msg_box = 1;
+				ptx->wait = ptx->x1C;
+				if (gKey & KEY_Z)
+					ptx->wait = 0;
+
+				//Type character
+				c[0] = ptx->data[ptx->p_read];
+				c[1] = 0;
+				PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
+				PutText3((6 * ptx->p_write) + 1, 1 + (1 - (ptx->line % 2)), c, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+				PutText3(6 * ptx->p_write, 0 + (1 - (ptx->line % 2)), c, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
 				ptx->p_write++;
 				ptx->p_read++;
 				return 0;
@@ -1022,6 +1038,27 @@ char EventScriptProc(EVENT_SCR *ptx, ITEMS *items, NPCHAR *npc, MAP *map, PIYOPI
 		{
 			//'NOD', ends script
 			ptx->mode = 7;
+			return 0;
+		}
+		if (IS_COMMAND('u', 'c'))
+		{
+			//Print Unicode character (UTF-16, BMP)
+			ptx->p_read += 3;
+			x = GetEventScriptNo(ptx);
+			ptx->p_read++;
+			y = GetEventScriptNo(ptx);
+			int u = 10000*x+y;
+			//Type wait
+			ptx->msg_box = 1;
+			ptx->wait = ptx->x1C;
+			if (gKey & KEY_Z)
+				ptx->wait = 0;
+
+			//Type character
+			PlaySoundObject(SOUND_ID_MESSAGE, SOUND_MODE_PLAY);
+			PutText4((6 * ptx->p_write) + 1, 1 + (1 - (ptx->line % 2)), u, 0xFF0000, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+			PutText4(6 * ptx->p_write, 0 + (1 - (ptx->line % 2)), u, 0xFFFFFF, SURFACE_ID_TEXT0 + (ptx->line % 2), FALSE);
+			ptx->p_write++;
 			return 0;
 		}
 		if (IS_COMMAND('e','n'))
